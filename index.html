@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #6c5ce7;
+            --primary-light: #a29bfe;
+            --secondary: #00b894;
+            --secondary-light: #55efc4;
+            --accent: #fd79a8;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --light: #f5f6fa;
+            --dark: #2d3436;
+            --radius: 10px;
+            --shadow: 0 10px 20px rgba(0,0,0,0.1);
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #dfe6e9 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Auth Styles */
+        .auth-container {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            max-width: 500px;
+            margin: 50px auto;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), var(--warning));
+            animation: rainbow 8s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .auth-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff7675);
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transform: scale(0.95);
+            opacity: 0;
+            animation: scaleIn 0.5s forwards 0.2s;
+        }
+
+        @keyframes scaleIn {
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .dashboard-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), var(--warning));
+            animation: rainbow 8s linear infinite;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--warning));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+            box-shadow: 0 5px 15px rgba(253, 121, 168, 0.4);
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover {
+            transform: rotate(15deg) scale(1.1);
+        }
+
+        .dashboard-body {
+            padding: 30px;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 25px;
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f2f6;
+            transition: var(--transition);
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .checkbox-cell {
+            text-align: center;
+        }
+
+        input[type="checkbox"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #dfe6e9;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: var(--secondary);
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(0, 184, 148, 0.3);
+        }
+
+        input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid #f1f2f6;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            color: #636e72;
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary);
+        }
+
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            animation: rainbow 8s linear infinite;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border-top: 4px solid var(--primary);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            animation: rainbow 8s linear infinite;
+        }
+
+        .stat-card h3 {
+            color: #636e72;
+            font-size: 14px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .stat-card p {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        /* Compact Analytics */
+        .compact-analytics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            height: 300px;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner.active {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transform: translateX(150%);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            border-left: 4px solid var(--primary);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left-color: var(--secondary);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+        }
+
+        .toast.success .toast-icon {
+            color: var(--secondary);
+        }
+
+        .toast.error .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .user-info {
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .compact-analytics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Additional Features */
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            padding: 12px 15px;
+            border-radius: var(--radius);
+            border: 2px solid #dfe6e9;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background-color: var(--secondary-light);
+            color: var(--dark);
+        }
+
+        .badge-warning {
+            background-color: var(--warning);
+            color: var(--dark);
+        }
+
+        .badge-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls select, .filter-controls input {
+            min-width: 200px;
+            flex: 1;
+        }
+
+               /* Media Queries for Larger Screens */
+               @media (min-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+
+            .container {
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .auth-container {
+                max-width: 450px;
+            }
+
+            .dashboard-header {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .nav-tabs {
+                gap: 15px;
+                padding-bottom: 0;
+            }
+
+            .nav-tab {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .filter-controls {
+                flex-direction: row;
+                align-items: flex-end;
+            }
+
+            .action-buttons .btn {
+                flex: 0 1 auto;
+                padding: 12px 20px;
+            }
+
+            .toast {
+                left: auto;
+                width: auto;
+                max-width: 400px;
+            }
+        }
+
+        /* Very Small Screens */
+        @media (max-width: 360px) {
+            .auth-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .auth-header p {
+                font-size: 0.8rem;
+            }
+
+            .dashboard-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons .btn {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <!-- Auth Container -->
+    <div class="container" id="authContainer">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h2>Smart Attendance Pro</h2>
+                <p>Track student attendance with ease</p>
+            </div>
+            <div class="auth-body">
+                <div class="nav-tabs">
+                    <div class="nav-tab active" onclick="switchTab('login')">Login</div>
+                    <div class="nav-tab" onclick="switchTab('register')">Register</div>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="loginTab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password">
+                    </div>
+                    <button class="btn" onclick="login()" id="loginBtn">
+                        <span id="loginBtnText">Login</span>
+                        <span id="loginSpinner" class="spinner"></span>
+                    </button>
+                    <p class="text-center mt-3">
+                        Don't have an account? <a href="#" onclick="switchTab('register')">Register here</a>
+                    </p>
+                </div>
+                
+                <!-- Register Form -->
+                <div id="registerTab" class="tab-content">
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email</label>
+                        <input type="email" id="regEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" placeholder="Create a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirmPassword">Confirm Password</label>
+                        <input type="password" id="regConfirmPassword" placeholder="Confirm your password">
+                    </div>
+                    <button class="btn btn-secondary" onclick="register()" id="registerBtn">
+                        <span id="registerBtnText">Register</span>
+                        <span id="registerSpinner" class="spinner"></span>
+                    </button>
+                    <p class="text-center mt-3">
+                        Already have an account? <a href="#" onclick="switchTab('login')">Login here</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Container -->
+    <div class="container hidden" id="dashboardContainer">
+        <div class="dashboard">
+            <div class="dashboard-header">
+                <h2>Attendance Dashboard</h2>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatar">T</div>
+                    <div>
+                        <div id="userName">Teacher</div>
+                        <div style="font-size: 12px;" id="userRole">Teacher</div>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()" style="margin-left: auto;">Logout</button>
+                </div>
+            </div>
+            <div class="dashboard-body">
+                <div class="nav-tabs">
+                    <div class="nav-tab active" onclick="switchDashboardTab('students')">Students</div>
+                    <div class="nav-tab" onclick="switchDashboardTab('attendance')">Attendance</div>
+                    <div class="nav-tab" onclick="switchDashboardTab('analytics')">Analytics</div>
+                    <div class="nav-tab" onclick="generateWeeklyReport()">Weekly Report</div>
+                    <div class="nav-tab" onclick="switchDashboardTab('settings')">Settings</div>
+                </div>
+                
+                <!-- Students Tab -->
+                <div id="studentsTab" class="tab-content active">
+                    <h3>Manage Students</h3>
+                    <div class="search-box">
+                        <input type="text" id="studentSearch" placeholder="Search students..." oninput="searchStudents()">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="studentClassFilter" onchange="filterStudents()">
+                            <option value="">All Classes</option>
+                            <option value="cse">Computer Science</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="civil">Civil</option>
+                            <option value="it">Information Technology</option>
+                            <option value="pharmacy">Pharmacy</option>
+                            <option value="mechanical">Mechanical</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: flex; gap: 15px;">
+                        <div style="flex: 1;">
+                            <label for="studentName">Student Name</label>
+                            <input type="text" id="studentName" placeholder="Enter student name">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="studentRoll">Roll Number</label>
+                            <input type="text" id="studentRoll" placeholder="Enter roll number">
+                        </div>
+                        <div style="flex: 1;">
+                            <label for="studentClass">Class</label>
+                            <select id="studentClass">
+                                <option value=""disabled selected>Select</option>
+                                <option value="cse">Computer Science</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="civil">Civil</option>
+                                <option value="it">Information Technology</option>
+                                <option value="pharmacy">Pharmacy</option>
+                                <option value="mechanical">Mechanical</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="addStudent()">Add Student</button>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Roll No</th>
+                                <th>Name</th>
+                                <th>Class</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <!-- Students will be added here -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Attendance Tab -->
+                <div id="attendanceTab" class="tab-content">
+                    <h3>Record Attendance</h3>
+                    <div class="filter-controls">
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="attendanceClass">Class</label>
+                            <select id="attendanceClass">
+                                <option value=""disabled selected>Select Class</option>
+                                <option value="cse">Computer Science</option>
+                                <option value="electrical">Electrical</option>
+                                <option value="civil">Civil</option>
+                                <option value="it">Information Technology</option>
+                                <option value="pharmacy">Pharmacy</option>
+                                <option value="mechanical">Mechanical</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1; min-width: 200px;">
+                            <label for="attendanceDate">Date</label>
+                            <input type="date" id="attendanceDate">
+                        </div>
+                        <div style="align-self: flex-end; min-width: 100px;">
+                            <button class="btn" onclick="loadStudentsForAttendance()">View Student Data</button>
+                        </div>
+                    </div>
+                    
+                    <div class="search-box">
+                        <input type="text" id="attendanceSearch" placeholder="Search students..." oninput="searchAttendance()">
+                    </div>
+                    
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Name</th>
+                                    <th class="checkbox-cell">Lecture 1</th>
+                                    <th class="checkbox-cell">Lecture 2</th>
+                                    <th class="checkbox-cell">Lecture 3</th>
+                                    <th class="checkbox-cell">Lecture 4</th>
+                                    <th class="checkbox-cell">Lecture 5</th>
+                                    <th class="checkbox-cell">Lecture 6</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                <!-- Attendance records will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="saveAttendance()">Save Attendance</button>
+                        <button class="btn" onclick="markAllPresent()">Mark All Present</button>
+                        <button class="btn btn-danger" onclick="markAllAbsent()">Mark All Absent</button>
+                    </div>
+                </div>
+                
+                <!-- Analytics Tab -->
+                <div id="analyticsTab" class="tab-content">
+                    <h3>Attendance Analytics</h3>
+                    <div class="filter-controls">
+                        <select id="analyticsClassFilter" onchange="updateAnalytics()">
+                            <option value=""disabled selected>All Classes</option>
+                            <option value="cse">Computer Science</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="civil">Civil</option>
+                            <option value="it">Information Technology</option>
+                            <option value="pharmacy">Pharmacy</option>
+                            <option value="mechanical">Mechanical</option>
+                        </select>
+                        <input type="date" id="analyticsStartDate" onchange="updateAnalytics()">
+                        <input type="date" id="analyticsEndDate" onchange="updateAnalytics()">
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Students</h3>
+                            <p id="totalStudents">0</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Average Attendance</h3>
+                            <p id="avgAttendance">0%</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Most Absent Student</h3>
+                            <p id="mostAbsent">-</p>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Best Attendance</h3>
+                            <p id="bestAttendance">-</p>
+                        </div>
+                    </div>
+                    
+                    <div class="compact-analytics">
+                        <div class="chart-container">
+                            <canvas id="attendanceChart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="classComparisonChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Roll No</th>
+                                    <th>Student Name</th>
+                                    <th>Class</th>
+                                    <th>Lectures Attended</th>
+                                    <th>Total Lectures</th>
+                                    <th>Attendance %</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="analyticsTableBody">
+                                <!-- Analytics data will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Settings Tab -->
+                <div id="settingsTab" class="tab-content">
+                    <h3>System Settings</h3>
+                    <div class="form-group">
+                        <label for="lecturesPerDay">Lectures Per Day</label>
+                        <input type="number" id="lecturesPerDay" min="1" max="10" value="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="attendanceThreshold">Attendance Threshold (%)</label>
+                        <input type="number" id="attendanceThreshold" min="0" max="100" value="75">
+                    </div>
+                    <div class="form-group">
+                        <label for="autoReport">Auto-generate Weekly Report</label>
+                        <select id="autoReport">
+                            <option value="true">Enabled</option>
+                            <option value="false">Disabled</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="saveSettings()">Save Settings</button>
+                    
+                    <h3 style="margin-top: 30px;">Data Management</h3>
+                    <div class="action-buttons">
+                        <button class="btn btn-secondary" onclick="exportData()">Export Data</button>
+                        <button class="btn btn-danger" onclick="confirmReset()">Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize jsPDF
+        const { jsPDF } = window.jspdf;
+
+        // Database
+        let users = JSON.parse(localStorage.getItem('attendanceUsers')) || [];
+        let students = JSON.parse(localStorage.getItem('attendanceStudents')) || [];
+        let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let settings = JSON.parse(localStorage.getItem('attendanceSettings')) || {
+            lecturesPerDay: 6,
+            attendanceThreshold: 75,
+            autoReport: true
+        };
+
+        // Charts
+        let attendanceChart = null;
+        let classComparisonChart = null;
+
+        // Check if we should generate weekly report
+        checkWeeklyReport();
+
+        // DOM Elements
+        const authContainer = document.getElementById('authContainer');
+        const dashboardContainer = document.getElementById('dashboardContainer');
+
+        // Initialize UI if user is already logged in
+        if (currentUser) {
+            authContainer.classList.add('hidden');
+            dashboardContainer.classList.remove('hidden');
+            updateUI();
+            renderStudentsTable();
+            updateAnalytics();
+            loadSettings();
+            
+            // Set default dates
+            const today = new Date();
+            document.getElementById('attendanceDate').valueAsDate = today;
+            document.getElementById('analyticsStartDate').valueAsDate = new Date(today.setDate(today.getDate() - 30));
+            document.getElementById('analyticsEndDate').valueAsDate = new Date();
+        }
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-icon">
+                    ${type === 'success' ? '✓' : type === 'error' ? '✗' : '⚠'}
+                </div>
+                <div>${message}</div>
+            `;
+            document.getElementById('toastContainer').appendChild(toast);
+            
+            setTimeout(() => toast.classList.add('show'), 10);
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // Switch between login/register tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+        }
+
+        // Switch dashboard tabs
+        function switchDashboardTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-tab[onclick="switchDashboardTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
+            
+            // Initialize charts when analytics tab is opened
+            if (tabName === 'analytics') {
+                setTimeout(() => {
+                    initCharts();
+                    updateAnalytics();
+                }, 100);
+            }
+        }
+
+        // Update UI with current user info
+        function updateUI() {
+            if (!currentUser) return;
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('userRole').textContent = currentUser.role;
+        }
+
+        // Initialize charts
+        function initCharts() {
+            const attendanceCtx = document.getElementById('attendanceChart').getContext('2d');
+            const comparisonCtx = document.getElementById('classComparisonChart').getContext('2d');
+            
+            // Destroy existing charts if they exist
+            if (attendanceChart) attendanceChart.destroy();
+            if (classComparisonChart) classComparisonChart.destroy();
+            
+            attendanceChart = new Chart(attendanceCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: [],
+                        backgroundColor: 'rgba(108, 92, 231, 0.2)',
+                        borderColor: 'rgba(108, 92, 231, 1)',
+                        borderWidth: 2,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            classComparisonChart = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Computer Science', 'Electrical', 'Civil', 'IT', 'Pharmacy', 'Mechanical'],
+                    datasets: [{
+                        label: 'Average Attendance %',
+                        data: [],
+                        backgroundColor: [
+                            'rgba(108, 92, 231, 0.7)',
+                            'rgba(0, 184, 148, 0.7)',
+                            'rgba(253, 203, 110, 0.7)',
+                            'rgba(253, 121, 168, 0.7)',
+                            'rgba(85, 239, 196, 0.7)',
+                            'rgba(161, 136, 127, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(108, 92, 231, 1)',
+                            'rgba(0, 184, 148, 1)',
+                            'rgba(253, 203, 110, 1)',
+                            'rgba(253, 121, 168, 1)',
+                            'rgba(85, 239, 196, 1)',
+                            'rgba(161, 136, 127, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Register new user
+        function register() {
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const role = "teacher";
+            
+            if (!name || !email || !password || !confirmPassword) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+            
+            if (users.some(user => user.email === email)) {
+                showToast('Email already registered', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const registerBtn = document.getElementById('registerBtn');
+            const btnText = document.getElementById('registerBtnText');
+            const spinner = document.getElementById('registerSpinner');
+            
+            btnText.classList.add('hidden');
+            spinner.classList.add('active');
+            registerBtn.disabled = true;
+            
+            setTimeout(() => {
+                try {
+                    const newUser = {
+                        id: Date.now().toString(),
+                        name,
+                        email,
+                        password, // In real app, hash this password
+                        role,
+                        createdAt: new Date()
+                    };
+                    
+                    users.push(newUser);
+                    localStorage.setItem('attendanceUsers', JSON.stringify(users));
+                    
+                    showToast('Registration successful! Please login', 'success');
+                    switchTab('login');
+                    
+                    // Clear form
+                    document.getElementById('regName').value = '';
+                    document.getElementById('regEmail').value = '';
+                    document.getElementById('regPassword').value = '';
+                    document.getElementById('regConfirmPassword').value = '';
+                } catch (error) {
+                    showToast('Registration failed', 'error');
+                } finally {
+                    // Reset button state
+                    btnText.classList.remove('hidden');
+                    spinner.classList.remove('active');
+                    registerBtn.disabled = false;
+                }
+            }, 1500);
+        }
+
+        // Login user
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            if (!email || !password) {
+                showToast('Please enter email and password', 'error');
+                return;
+            }
+            
+            // Show loading state
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('loginBtnText');
+            const spinner = document.getElementById('loginSpinner');
+            
+            btnText.classList.add('hidden');
+            spinner.classList.add('active');
+            loginBtn.disabled = true;
+            
+            setTimeout(() => {
+                try {
+                    const user = users.find(u => u.email === email && u.password === password);
+                    
+                    if (!user) {
+                        showToast('Invalid credentials', 'error');
+                        return;
+                    }
+                    
+                    currentUser = user;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    // Update UI
+                    updateUI();
+                    
+                    // Show dashboard
+                    authContainer.classList.add('hidden');
+                    dashboardContainer.classList.remove('hidden');
+                    
+                    // Load initial data
+                    renderStudentsTable();
+                    updateAnalytics();
+                    loadSettings();
+                    
+                    // Set default dates
+                    const today = new Date();
+                    document.getElementById('attendanceDate').valueAsDate = today;
+                    document.getElementById('analyticsStartDate').valueAsDate = new Date(today.setDate(today.getDate() - 30));
+                    document.getElementById('analyticsEndDate').valueAsDate = new Date();
+                    
+                    showToast(`Welcome back, ${user.name}!`, 'success');
+                    
+                    // Clear form
+                    document.getElementById('loginEmail').value = '';
+                    document.getElementById('loginPassword').value = '';
+                } catch (error) {
+                    showToast('Login failed', 'error');
+                } finally {
+                    // Reset button state
+                    btnText.classList.remove('hidden');
+                    spinner.classList.remove('active');
+                    loginBtn.disabled = false;
+                }
+            }, 1500);
+        }
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            authContainer.classList.remove('hidden');
+            dashboardContainer.classList.add('hidden');
+            
+            // Clear login form
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            showToast('Logged out successfully', 'success');
+        }
+
+        // Load settings
+        function loadSettings() {
+            document.getElementById('lecturesPerDay').value = settings.lecturesPerDay;
+            document.getElementById('attendanceThreshold').value = settings.attendanceThreshold;
+            document.getElementById('autoReport').value = settings.autoReport;
+        }
+
+        // Save settings
+        function saveSettings() {
+            settings.lecturesPerDay = parseInt(document.getElementById('lecturesPerDay').value);
+            settings.attendanceThreshold = parseInt(document.getElementById('attendanceThreshold').value);
+            settings.autoReport = document.getElementById('autoReport').value === 'true';
+            
+            localStorage.setItem('attendanceSettings', JSON.stringify(settings));
+            showToast('Settings saved successfully', 'success');
+        }
+
+        // Add new student
+        function addStudent() {
+            const name = document.getElementById('studentName').value;
+            const roll = document.getElementById('studentRoll').value;
+            const classVal = document.getElementById('studentClass').value;
+            
+            if (!name || !roll) {
+                showToast('Please enter student name and roll number', 'error');
+                return;
+            }
+            
+            if (students.some(s => s.roll === roll)) {
+                showToast('Roll number already exists', 'error');
+                return;
+            }
+            
+            const newStudent = {
+                roll,
+                name,
+                class: classVal,
+                addedBy: currentUser.id,
+                addedAt: new Date()
+            };
+            
+            students.push(newStudent);
+            localStorage.setItem('attendanceStudents', JSON.stringify(students));
+            renderStudentsTable();
+            
+            // Clear form
+            document.getElementById('studentName').value = '';
+            document.getElementById('studentRoll').value = '';
+            
+            showToast(`Student ${name} added successfully`, 'success');
+        }
+
+        // Render students table
+        function renderStudentsTable() {
+            const tableBody = document.getElementById('studentsTableBody');
+            tableBody.innerHTML = '';
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.roll}</td>
+                    <td>${student.name}</td>
+                    <td>${getClassName(student.class)}</td>
+                    <td><span class="badge badge-success">Active</span></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteStudent('${student.roll}')" style="padding: 6px 12px; font-size: 14px;">Delete</button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Search students
+        function searchStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#studentsTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Filter students by class
+        function filterStudents() {
+            const classFilter = document.getElementById('studentClassFilter').value;
+            const rows = document.querySelectorAll('#studentsTableBody tr');
+            
+            rows.forEach(row => {
+                const classVal = row.cells[2].textContent.toLowerCase();
+                if (!classFilter || classVal.includes(classFilter.toLowerCase())) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Get class name from class code
+        function getClassName(classCode) {
+            const classes = {
+                'cse': 'Computer Science',
+                'electrical': 'Electrical',
+                'civil': 'Civil',
+                'it': 'Information Technology',
+                'pharmacy': 'Pharmacy',
+                'mechanical': 'Mechanical'
+            };
+            return classes[classCode] || classCode;
+        }
+
+        // Delete student
+        function deleteStudent(studentRoll) {
+            if (!confirm('Are you sure you want to delete this student?')) return;
+            
+            const index = students.findIndex(s => s.roll === studentRoll);
+            if (index !== -1) {
+                students.splice(index, 1);
+                localStorage.setItem('attendanceStudents', JSON.stringify(students));
+                renderStudentsTable();
+                showToast('Student deleted successfully', 'success');
+            }
+        }
+
+        // Load students for attendance
+        function loadStudentsForAttendance() {
+            const classVal = document.getElementById('attendanceClass').value;
+            const date = document.getElementById('attendanceDate').value;
+            
+            if (!classVal || !date) {
+                showToast('Please select class and date', 'error');
+                return;
+            }
+            
+            const classStudents = students.filter(s => s.class === classVal);
+            const tableBody = document.getElementById('attendanceTableBody');
+            tableBody.innerHTML = '';
+            
+            classStudents.forEach(student => {
+                // Check if attendance already exists for this date
+                const existingRecord = attendanceRecords.find(
+                    r => r.studentRoll === student.roll && r.date === date
+                );
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${student.roll}</td>
+                    <td>${student.name}</td>
+                    ${[1, 2, 3, 4, 5, 6].map(lecture => `
+                        <td class="checkbox-cell">
+                            <input type="checkbox" ${existingRecord?.lectures[lecture-1] ? 'checked' : ''} 
+                                onchange="updateAttendanceRecord('${student.roll}', '${date}', ${lecture-1}, this.checked)">
+                        </td>
+                    `).join('')}
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            if (classStudents.length === 0) {
+                showToast('No students found for this class', 'warning');
+            } else {
+                showToast(`Loaded ${classStudents.length} students`, 'success');
+            }
+        }
+
+        // Search attendance records
+        function searchAttendance() {
+            const searchTerm = document.getElementById('attendanceSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#attendanceTableBody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        // Mark all present
+        function markAllPresent() {
+            const checkboxes = document.querySelectorAll('#attendanceTableBody input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = true;
+                const row = checkbox.closest('tr');
+                const roll = row.cells[0].textContent;
+                const date = document.getElementById('attendanceDate').value;
+                const lectureIndex = Array.from(row.cells).indexOf(checkbox.closest('td')) - 2;
+                
+                if (lectureIndex >= 0 && lectureIndex < 6) {
+                    updateAttendanceRecord(roll, date, lectureIndex, true);
+                }
+            });
+            showToast('All students marked as present', 'success');
+        }
+
+        // Mark all absent
+        function markAllAbsent() {
+            const checkboxes = document.querySelectorAll('#attendanceTableBody input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+                const row = checkbox.closest('tr');
+                const roll = row.cells[0].textContent;
+                const date = document.getElementById('attendanceDate').value;
+                const lectureIndex = Array.from(row.cells).indexOf(checkbox.closest('td')) - 2;
+                
+                if (lectureIndex >= 0 && lectureIndex < 6) {
+                    updateAttendanceRecord(roll, date, lectureIndex, false);
+                }
+            });
+            showToast('All students marked as absent', 'success');
+        }
+
+        // Update attendance record
+        function updateAttendanceRecord(studentRoll, date, lectureIndex, isPresent) {
+            let record = attendanceRecords.find(
+                r => r.studentRoll === studentRoll && r.date === date
+            );
+            
+            if (!record) {
+                record = {
+                    id: Date.now().toString(),
+                    studentRoll,
+                    date,
+                    lectures: new Array(6).fill(false),
+                    recordedBy: currentUser.id,
+                    recordedAt: new Date()
+                };
+                attendanceRecords.push(record);
+            }
+            
+            record.lectures[lectureIndex] = isPresent;
+            localStorage.setItem('attendanceRecords', JSON.stringify(attendanceRecords));
+        }
+
+        // Save attendance
+        function saveAttendance() {
+            const date = document.getElementById('attendanceDate').value;
+            
+            if (!date) {
+                showToast('Please select a date', 'error');
+                return;
+            }
+            
+            // Filter records for the selected date
+            const dateRecords = attendanceRecords.filter(r => r.date === date);
+            
+            if (dateRecords.length === 0) {
+                showToast('No attendance data to save', 'warning');
+                return;
+            }
+            
+            showToast('Attendance saved successfully!', 'success');
+            updateAnalytics();
+            switchDashboardTab('analytics');
+        }
+
+        // Update analytics
+        function updateAnalytics() {
+            const classFilter = document.getElementById('analyticsClassFilter').value;
+            const startDate = document.getElementById('analyticsStartDate').value;
+            const endDate = document.getElementById('analyticsEndDate').value;
+            
+            // Filter students by class if selected
+            let filteredStudents = students;
+            if (classFilter) {
+                filteredStudents = students.filter(s => s.class === classFilter);
+            }
+            
+            // Calculate total students
+            document.getElementById('totalStudents').textContent = filteredStudents.length;
+            
+            // Calculate attendance stats
+            const studentStats = filteredStudents.map(student => {
+                // Filter records by date range if selected
+                let studentRecords = attendanceRecords.filter(r => r.studentRoll === student.roll);
+                if (startDate && endDate) {
+                    studentRecords = studentRecords.filter(r => {
+                        const recordDate = new Date(r.date);
+                        const start = new Date(startDate);
+                        const end = new Date(endDate);
+                        return recordDate >= start && recordDate <= end;
+                    });
+                }
+                
+                const totalLectures = studentRecords.length * settings.lecturesPerDay;
+                let attendedLectures = 0;
+                
+                studentRecords.forEach(record => {
+                    attendedLectures += record.lectures.filter(lecture => lecture).length;
+                });
+                
+                const attendancePercent = totalLectures > 0 
+                    ? Math.round((attendedLectures / totalLectures) * 100)
+                    : 0;
+                
+                // Determine status based on threshold
+                let status = 'Good';
+                if (attendancePercent < settings.attendanceThreshold) {
+                    status = attendancePercent < (settings.attendanceThreshold / 2) ? 'Critical' : 'Warning';
+                }
+                
+                return {
+                    roll: student.roll,
+                    name: student.name,
+                    class: student.class,
+                    attendedLectures,
+                    totalLectures,
+                    attendancePercent,
+                    status
+                };
+            });
+            
+            // Update analytics table
+            const analyticsBody = document.getElementById('analyticsTableBody');
+            analyticsBody.innerHTML = '';
+            
+            studentStats.forEach(stat => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${stat.roll}</td>
+                    <td>${stat.name}</td>
+                    <td>${getClassName(stat.class)}</td>
+                    <td>${stat.attendedLectures}</td>
+                    <td>${stat.totalLectures}</td>
+                    <td>${stat.attendancePercent}%</td>
+                    <td><span class="badge ${stat.status === 'Good' ? 'badge-success' : stat.status === 'Warning' ? 'badge-warning' : 'badge-danger'}">${stat.status}</span></td>
+                `;
+                analyticsBody.appendChild(row);
+            });
+            
+            // Calculate overall stats
+            if (studentStats.length > 0) {
+                const totalAttended = studentStats.reduce((sum, stat) => sum + stat.attendedLectures, 0);
+                const totalPossible = studentStats.reduce((sum, stat) => sum + stat.totalLectures, 0);
+                const avgAttendance = totalPossible > 0 
+                    ? Math.round((totalAttended / totalPossible) * 100)
+                    : 0;
+                
+                document.getElementById('avgAttendance').textContent = `${avgAttendance}%`;
+                
+                // Find most absent and best attendance
+                const sortedByAttendance = [...studentStats].sort((a, b) => 
+                    a.attendancePercent - b.attendancePercent
+                );
+                
+                if (sortedByAttendance.length > 0) {
+                    document.getElementById('mostAbsent').textContent = 
+                        `${sortedByAttendance[0].name} (${sortedByAttendance[0].attendancePercent}%)`;
+                    document.getElementById('bestAttendance').textContent = 
+                        `${sortedByAttendance[sortedByAttendance.length - 1].name} (${sortedByAttendance[sortedByAttendance.length - 1].attendancePercent}%)`;
+                }
+            }
+            
+            // Update charts if they exist
+            if (attendanceChart && classComparisonChart) {
+                updateCharts(studentStats);
+            }
+        }
+
+        // Update charts
+        function updateCharts(studentStats) {
+            // Update attendance trend chart
+            const dates = [...new Set(attendanceRecords.map(r => r.date))].sort();
+            const attendanceTrend = dates.map(date => {
+                const dateRecords = attendanceRecords.filter(r => r.date === date);
+                const totalPossible = dateRecords.length * settings.lecturesPerDay;
+                const totalAttended = dateRecords.reduce((sum, record) => {
+                    return sum + record.lectures.filter(l => l).length;
+                }, 0);
+                return totalPossible > 0 ? Math.round((totalAttended / totalPossible) * 100) : 0;
+            });
+            
+            attendanceChart.data.labels = dates;
+            attendanceChart.data.datasets[0].data = attendanceTrend;
+            attendanceChart.update();
+            
+            // Update class comparison chart
+            const classData = {
+                'cse': { total: 0, attended: 0 },
+                'electrical': { total: 0, attended: 0 },
+                'civil': { total: 0, attended: 0 },
+                'it': { total: 0, attended: 0 },
+                'pharmacy': { total: 0, attended: 0 },
+                'mechanical': { total: 0, attended: 0 }
+            };
+            
+            attendanceRecords.forEach(record => {
+                const student = students.find(s => s.roll === record.studentRoll);
+                if (student && classData[student.class]) {
+                    classData[student.class].total += settings.lecturesPerDay;
+                    classData[student.class].attended += record.lectures.filter(l => l).length;
+                }
+            });
+            
+            const classPercentages = [
+                classData['cse'].total > 0 ? Math.round((classData['cse'].attended / classData['cse'].total) * 100) : 0,
+                classData['electrical'].total > 0 ? Math.round((classData['electrical'].attended / classData['electrical'].total) * 100) : 0,
+                classData['civil'].total > 0 ? Math.round((classData['civil'].attended / classData['civil'].total) * 100) : 0,
+                classData['it'].total > 0 ? Math.round((classData['it'].attended / classData['it'].total) * 100) : 0,
+                classData['pharmacy'].total > 0 ? Math.round((classData['pharmacy'].attended / classData['pharmacy'].total) * 100) : 0,
+                classData['mechanical'].total > 0 ? Math.round((classData['mechanical'].attended / classData['mechanical'].total) * 100) : 0
+            ];
+            
+            classComparisonChart.data.datasets[0].data = classPercentages;
+            classComparisonChart.update();
+        }
+
+        // Check if weekly report should be generated
+        function checkWeeklyReport() {
+            if (!currentUser || !settings.autoReport) return;
+            
+            const lastReportDate = localStorage.getItem('lastReportDate');
+            const today = new Date();
+            const lastDate = lastReportDate ? new Date(lastReportDate) : null;
+            
+            // Generate report if 7 days have passed since last report
+            if (!lastDate || (today - lastDate) >= (7 * 24 * 60 * 60 * 1000)) {
+                generateWeeklyReport(true);
+                localStorage.setItem('lastReportDate', today.toISOString());
+            }
+        }
+
+        // Generate weekly report PDF
+        function generateWeeklyReport(auto = false) {
+            if (students.length === 0 || attendanceRecords.length === 0) {
+                showToast('No attendance data available for report', 'warning');
+                return;
+            }
+            
+            // Show loading state
+            const btnText = document.querySelector('.nav-tab[onclick="generateWeeklyReport()"]');
+            const originalText = btnText.textContent;
+            btnText.innerHTML = '<span class="spinner active"></span> Generating...';
+            
+            setTimeout(() => {
+                try {
+                    // Calculate attendance stats
+                    const studentStats = students.map(student => {
+                        const studentRecords = attendanceRecords.filter(r => r.studentRoll === student.roll);
+                        const totalLectures = studentRecords.length * settings.lecturesPerDay;
+                        let attendedLectures = 0;
+                        
+                        studentRecords.forEach(record => {
+                            attendedLectures += record.lectures.filter(lecture => lecture).length;
+                        });
+                        
+                        const attendancePercent = totalLectures > 0 
+                            ? Math.round((attendedLectures / totalLectures) * 100)
+                            : 0;
+                        
+                        return {
+                            roll: student.roll,
+                            name: student.name,
+                            class: getClassName(student.class),
+                            attendedLectures,
+                            totalLectures,
+                            attendancePercent
+                        };
+                    });
+                    
+                    // Create PDF
+                    const doc = new jsPDF();
+                    
+                    // Add title
+                    doc.setFontSize(20);
+                    doc.setTextColor(40, 53, 147);
+                    doc.text('Weekly Attendance Report', 105, 20, { align: 'center' });
+                    
+                    // Add date
+                    doc.setFontSize(12);
+                    doc.setTextColor(100);
+                    doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 105, 30, { align: 'center' });
+                    
+                    // Add summary table
+                    doc.autoTable({
+                        head: [['Roll No', 'Name', 'Class', 'Lectures Attended', 'Total Lectures', 'Attendance %']],
+                        body: studentStats.map(stat => [
+                            stat.roll,
+                            stat.name,
+                            stat.class,
+                            stat.attendedLectures,
+                            stat.totalLectures,
+                            `${stat.attendancePercent}%`
+                        ]),
+                        startY: 40,
+                        theme: 'grid',
+                        headStyles: {
+                            fillColor: [108, 92, 231],
+                            textColor: 255,
+                            fontStyle: 'bold'
+                        },
+                        alternateRowStyles: {
+                            fillColor: [240, 240, 255]
+                        },
+                        styles: {
+                            cellPadding: 5,
+                            fontSize: 10,
+                            valign: 'middle'
+                        },
+                        columnStyles: {
+                            0: { cellWidth: 20 },
+                            1: { cellWidth: 40 },
+                            2: { cellWidth: 30 },
+                            3: { cellWidth: 25 },
+                            4: { cellWidth: 25 },
+                            5: { cellWidth: 25 }
+                        }
+                    });
+                    
+                    // Add summary stats
+                    const totalAttended = studentStats.reduce((sum, stat) => sum + stat.attendedLectures, 0);
+                    const totalPossible = studentStats.reduce((sum, stat) => sum + stat.totalLectures, 0);
+                    const avgAttendance = totalPossible > 0 
+                        ? Math.round((totalAttended / totalPossible) * 100)
+                        : 0;
+                    
+                    doc.setFontSize(12);
+                    doc.setTextColor(0);
+                    doc.text(`Average Attendance: ${avgAttendance}%`, 14, doc.lastAutoTable.finalY + 20);
+                    
+                    // Add attendance by day
+                    const dates = [...new Set(attendanceRecords.map(r => r.date))].sort();
+                    let yPos = doc.lastAutoTable.finalY + 40;
+                    
+                    dates.forEach(date => {
+                        if (yPos > 250) {
+                            doc.addPage();
+                            yPos = 20;
+                        }
+                        
+                        doc.setFontSize(14);
+                        doc.setTextColor(40, 53, 147);
+                        doc.text(`Attendance for ${date}`, 14, yPos);
+                        
+                        const dateRecords = attendanceRecords.filter(r => r.date === date);
+                        const dateStudents = {};
+                        
+                        dateRecords.forEach(record => {
+                            const student = students.find(s => s.roll === record.studentRoll);
+                            if (student) {
+                                dateStudents[student.roll] = {
+                                    name: student.name,
+                                    attended: record.lectures.filter(l => l).length,
+                                    total: settings.lecturesPerDay
+                                };
+                            }
+                        });
+                        
+                        doc.autoTable({
+                            head: [['Roll No', 'Name', 'Lectures Attended', 'Total Lectures']],
+                            body: Object.keys(dateStudents).map(roll => [
+                                roll,
+                                dateStudents[roll].name,
+                                dateStudents[roll].attended,
+                                dateStudents[roll].total
+                            ]),
+                            startY: yPos + 10,
+                            theme: 'grid',
+                            headStyles: {
+                                fillColor: [108, 92, 231],
+                                textColor: 255,
+                                fontStyle: 'bold'
+                            },
+                            styles: {
+                                cellPadding: 5,
+                                fontSize: 10,
+                                valign: 'middle'
+                            }
+                        });
+                        
+                        yPos = doc.lastAutoTable.finalY + 15;
+                    });
+                    
+                    // Save PDF
+                    const fileName = `Attendance_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+                    doc.save(fileName);
+                    
+                    if (!auto) {
+                        showToast('Weekly report generated successfully!', 'success');
+                    }
+                } catch (error) {
+                    showToast('Failed to generate report', 'error');
+                } finally {
+                    // Reset button text
+                    btnText.textContent = originalText;
+                }
+            }, 500);
+        }
+
+        // Export data
+        function exportData() {
+            const data = {
+                users,
+                students,
+                attendanceRecords,
+                settings
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `attendance_data_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('Data exported successfully', 'success');
+        }
+
+        // Confirm reset
+        function confirmReset() {
+            if (confirm('Are you sure you want to reset ALL data? This cannot be undone!')) {
+                resetAllData();
+            }
+        }
+
+        // Reset all data
+        function resetAllData() {
+            localStorage.removeItem('attendanceUsers');
+            localStorage.removeItem('attendanceStudents');
+            localStorage.removeItem('attendanceRecords');
+            localStorage.removeItem('attendanceSettings');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('lastReportDate');
+            
+            users = [];
+            students = [];
+            attendanceRecords = [];
+            currentUser = null;
+            settings = {
+                lecturesPerDay: 6,
+                attendanceThreshold: 75,
+                autoReport: true
+            };
+            
+            // Reload the page
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>
