@@ -1310,15 +1310,20 @@ input:focus ~ .input-focus-animation {
     }
 
     function simulateLogin(email, password) {
-        // In a real app, you would make an AJAX call here
-        showToast('Login Successful', `Welcome back, ${email.split('@')[0]}!`, 'success');
-        createSparks(loginForm.querySelector('button'));
-        
-        // Reset form
-        setTimeout(() => {
-            loginForm.reset();
-        }, 1000);
-    }
+    // In a real app, you would make an AJAX call here
+    showToast('Login Successful', `Welcome back, ${email.split('@')[0]}!`, 'success');
+    createSparks(loginForm.querySelector('button'));
+    
+    // Reset form
+    setTimeout(() => {
+        loginForm.reset();
+    }, 1000);
+    
+    // Redirect to index.html after 2 seconds (adjust timing as needed)
+    setTimeout(() => {
+        window.location.href = 'index.html';
+    }, 2000);
+}
 
     function simulateRegistration(name, email, password) {
         // In a real app, you would make an AJAX call here
