@@ -497,160 +497,449 @@
         .toast.warning .toast-icon {
             color: var(--warning);
         }
+/* Mobile First Styles (applies to all screens) */
+.container {
+    width: 100%;
+    padding: 10px;
+}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .dashboard-header {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .user-info {
-                justify-content: center;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .compact-analytics {
-                grid-template-columns: 1fr;
-            }
-        }
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .container {
+        max-width: 540px;
+        padding: 15px;
+    }
+}
 
-        @media (max-width: 480px) {
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .data-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-
-        /* Additional Features */
-        .search-box {
-            margin-bottom: 20px;
-        }
-
-        .search-box input {
-            padding: 12px 15px;
-            border-radius: var(--radius);
-            border: 2px solid #dfe6e9;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background-color: var(--secondary-light);
-            color: var(--dark);
-        }
-
-        .badge-warning {
-            background-color: var(--warning);
-            color: var(--dark);
-        }
-
-        .badge-danger {
-            background-color: var(--danger);
-            color: white;
-        }
-
-        .filter-controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-controls select, .filter-controls input {
-            min-width: 200px;
-            flex: 1;
-        }
-
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .container {
+        max-width: 720px;
+    }
     
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .compact-analytics {
+        grid-template-columns: 1fr;
+    }
+}
 
-            .auth-container {
-                max-width: 450px;
-            }
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .container {
+        max-width: 960px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .compact-analytics {
+        grid-template-columns: 1fr 1fr;
+    }
+}
 
-            .dashboard-header {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 20px;
-            }
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
 
-            .nav-tabs {
-                gap: 15px;
-                padding-bottom: 0;
-            }
+/* Mobile-specific adjustments (applies to screens smaller than 768px) */
+@media (max-width: 767.98px) {
+    /* General adjustments */
+    body {
+        font-size: 14px;
+    }
+    
+    .container {
+        padding: 8px;
+    }
+    
+    /* Header adjustments */
+    .dashboard-header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+    
+    .user-info {
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    /* Navigation tabs */
+    .nav-tabs {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .nav-tab {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+    
+    /* Stats cards */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-card {
+        padding: 15px;
+    }
+    
+    .stat-card h3 {
+        font-size: 12px;
+    }
+    
+    .stat-card p {
+        font-size: 18px;
+    }
+    
+    /* Forms and inputs */
+    .auth-body {
+        padding: 20px 15px;
+    }
+    
+    .form-group {
+        margin-bottom: 15px;
+    }
+    
+    input, select {
+        padding: 12px;
+        font-size: 14px;
+    }
+    
+    .btn {
+        padding: 12px 20px;
+        font-size: 14px;
+        width: 100%;
+    }
+    
+    /* Tables */
+    .data-table {
+        font-size: 13px;
+    }
+    
+    .data-table th, 
+    .data-table td {
+        padding: 8px 10px;
+    }
+    
+    /* Filter controls */
+    .filter-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .filter-controls select, 
+    .filter-controls input {
+        min-width: 100%;
+        width: 100%;
+    }
+    
+    /* Action buttons */
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    /* Toast notifications */
+    .toast {
+        width: 90%;
+        right: 5%;
+        left: 5%;
+        max-width: none;
+    }
+}
 
-            .nav-tab {
-                padding: 10px 20px;
-                font-size: 0.9rem;
-            }
+/* Extra small devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+    /* Even more compact styles */
+    .auth-header {
+        padding: 15px;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.2rem;
+    }
+    
+    .dashboard-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+    
+    /* Single column layout for everything */
+    .compact-analytics {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Hide less important elements */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Make sure tables are scrollable */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
 
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+/* Very small devices (phones under 360px) */
+@media (max-width: 359.98px) {
+    /* Tiny screen optimizations */
+    body {
+        font-size: 13px;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .nav-tab {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .btn {
+        padding: 10px 15px;
+    }
+    
+    /* Stack all elements vertically */
+    .filter-controls,
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    /* Reduce padding everywhere */
+    .dashboard-body,
+    .auth-body,
+    .tab-content {
+        padding: 10px;
+    }
+}
 
-            .filter-controls {
-                flex-direction: row;
-                align-items: flex-end;
-            }
+/* Orientation-specific adjustments */
+@media screen and (max-width: 767.98px) and (orientation: landscape) {
+    /* Landscape mobile optimizations */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .nav-tabs {
+        padding-bottom: 0;
+    }
+    
+    .dashboard-header {
+        padding: 10px 15px;
+    }
+    
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+    }
+}
 
-            .action-buttons .btn {
-                flex: 0 1 auto;
-                padding: 12px 20px;
-            }
+/* High-density displays */
+@media 
+only screen and (-webkit-min-device-pixel-ratio: 2),
+only screen and (min-resolution: 192dpi) {
+    /* Make sure borders and thin elements look sharp */
+    .nav-tab.active::after,
+    .dashboard-header::after,
+    .auth-header::after {
+        height: 2px;
+    }
+    
+    input, select {
+        border-width: 1px;
+    }
+}
 
-            .toast {
-                left: auto;
-                width: auto;
-                max-width: 400px;
-            }
-        
-
-        /* Very Small Screens */
-        @media (max-width: 360px) {
-            .auth-header h2 {
-                font-size: 1.3rem;
-            }
-
-            .auth-header p {
-                font-size: 0.8rem;
-            }
-
-            .dashboard-header h2 {
-                font-size: 1.1rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons .btn {
-                flex: 1 1 100%;
-            }
-        }
+/* Print styles */
+@media print {
+    /* Hide non-essential elements when printing */
+    .dashboard-header,
+    .nav-tabs,
+    .action-buttons,
+    .search-box {
+        display: none !important;
+    }
+    
+    /* Make tables print well */
+    .data-table {
+        width: 100%;
+        font-size: 12px;
+    }
+    
+    /* Ensure good contrast */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .stat-card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+    }
+}
+/* Mobile-Only CSS (280px - 500px) */
+@media (min-width: 280px) and (max-width: 500px) {
+    /* Base adjustments */
+    body {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+    
+    .container {
+        padding: 8px;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /* Header optimizations */
+    .dashboard-header, .auth-header {
+        padding: 12px;
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.2rem;
+        margin-bottom: 5px;
+    }
+    
+    .user-info {
+        justify-content: center;
+        margin-top: 8px;
+    }
+    
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    /* Navigation */
+    .nav-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        display: flex;
+        flex-wrap: nowrap;
+    }
+    
+    .nav-tab {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+    
+    /* Forms */
+    .auth-body {
+        padding: 15px 10px;
+    }
+    
+    .form-group {
+        margin-bottom: 12px;
+    }
+    
+    input, select {
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+    
+    .btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        width: 100%;
+        margin: 4px 0;
+    }
+    
+    /* Stats cards */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .stat-card {
+        padding: 12px;
+    }
+    
+    .stat-card h3 {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+    
+    .stat-card p {
+        font-size: 18px;
+    }
+    
+    /* Tables */
+    .data-table {
+        font-size: 12px;
+    }
+    
+    .data-table th, 
+    .data-table td {
+        padding: 6px 8px;
+    }
+    
+    /* Utility classes */
+    .mt-3 {
+        margin-top: 10px;
+    }
+    
+    /* Hide non-essential elements */
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* Force single column layouts */
+    .compact-analytics,
+    .filter-controls,
+    .action-buttons {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+    
+    /* Make sure everything fits horizontally */
+    .search-box input {
+        max-width: 100%;
+    }
+    
+    /* Toast notifications */
+    .toast {
+        width: 94%;
+        left: 3%;
+        right: auto;
+        max-width: none;
+        padding: 10px 15px;
+    }
+    
+    /* Checkbox sizing */
+    input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+}
         :root {
     /* Modern Color Palette */
     --primary-color: #030c35;
@@ -2861,7 +3150,7 @@ function register(event) {
                     const doc = new jsPDF();
                     
                     // Add title
-                    doc.setFontSize(20);
+                    doc.setFontSize(14);
                     doc.setTextColor(40, 53, 147);
                     doc.text('Weekly Attendance Report', 105, 20, { align: 'center' });
                     
@@ -2892,8 +3181,8 @@ function register(event) {
                             fillColor: [240, 240, 255]
                         },
                         styles: {
-                            cellPadding: 5,
-                            fontSize: 10,
+                            cellPadding: 1.9,
+                            fontSize: 8,
                             valign: 'middle'
                         },
                         columnStyles: {
@@ -2913,7 +3202,7 @@ function register(event) {
                         ? Math.round((totalAttended / totalPossible) * 100)
                         : 0;
                     
-                    doc.setFontSize(12);
+                    doc.setFontSize(11);
                     doc.setTextColor(0);
                     doc.text(`Average Attendance: ${avgAttendance}%`, 14, doc.lastAutoTable.finalY + 20);
                     
@@ -2927,7 +3216,7 @@ function register(event) {
                             yPos = 20;
                         }
                         
-                        doc.setFontSize(14);
+                        doc.setFontSize(12);
                         doc.setTextColor(40, 53, 147);
                         doc.text(`Attendance for ${date}`, 14, yPos);
                         
@@ -2961,8 +3250,8 @@ function register(event) {
                                 fontStyle: 'bold'
                             },
                             styles: {
-                                cellPadding: 5,
-                                fontSize: 10,
+                                cellPadding: 1.7,
+                                fontSize: 7,
                                 valign: 'middle'
                             }
                         });
