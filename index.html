@@ -8,6 +8,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <style>
         :root {
             --primary: #6c5ce7;
@@ -39,9 +42,141 @@
         }
 
         .container {
-            max-width: 1200px;
+      
             margin: 0 auto;
-            padding: 20px;
+            padding: 1.7px  ;
+        }
+
+
+
+        @keyframes fadeInUp {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .auth-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-header::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--accent), var(--warning));
+            animation: rainbow 8s linear infinite;
+        }
+
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .auth-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: var(--radius);
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 92, 231, 0.4);
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+        }
+
+        .btn-secondary:hover {
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #ff7675);
+            box-shadow: 0 5px 15px rgba(214, 48, 49, 0.3);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-3 {
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         /* Dashboard Styles */
@@ -449,16 +584,10 @@
             flex: 1;
         }
 
-               /* Media Queries for Larger Screens */
-               @media (min-width: 768px) {
-            body {
-                font-size: 16px;
-            }
+    
 
-            .container {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
+            .auth-container {
+                max-width: 450px;
             }
 
             .dashboard-header {
@@ -497,10 +626,18 @@
                 width: auto;
                 max-width: 400px;
             }
-        }
+        
 
         /* Very Small Screens */
         @media (max-width: 360px) {
+            .auth-header h2 {
+                font-size: 1.3rem;
+            }
+
+            .auth-header p {
+                font-size: 0.8rem;
+            }
+
             .dashboard-header h2 {
                 font-size: 1.1rem;
             }
@@ -513,23 +650,960 @@
                 flex: 1 1 100%;
             }
         }
+        :root {
+    /* Modern Color Palette */
+    --primary-color: #030c35;
+    --primary-light: #4895ef;
+    --primary-dark: #aed689;
+    --secondary-color: #f72585;
+    --secondary-light: #b5179e;
+    --secondary-dark: #644877;
+    --accent-color: #4cc9f0;
+    --accent-light: #56cfe1;
+    --dark-color: #14213d;
+    --light-color: #f8f9fa;
+    --white: #f5e2e2;
+    --gray-100: #f1f3f5;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-600: #868e96;
+    --gray-800: #343a40;
+    --success-color: #38b000;
+    --error-color: #e5383b;
+    --warning-color: #ffaa00;
+    --info-color: #0096c7;
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+    --shadow-xl: 0 20px 50px rgba(0,0,0,0.2);
+    
+    /* Transitions */
+    --transition-fast: all 0.15s ease;
+    --transition-normal: all 0.3s ease;
+    --transition-slow: all 0.5s ease;
+}
+/* Modern Auth Container Styles */
+#authContainer {
+
+    position: relative;
+    background: linear-gradient(135deg, var(--dark-color), var(--primary-dark));
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   background-color: #dfc0c0;
+    overflow: hidden;
+    text-align: center;
+}
+
+#authContainer .particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+#authContainer .spark-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+#authContainer #container {
+    background-color: #f5e2e2;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+    width: 900px;
+    max-width: 100%;
+    min-height: 650px;
+    z-index: 2;
+    display: flex;
+}
+
+#authContainer .form-container {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#authContainer .sign-in-container {
+    left: 0;
+    opacity: 1;
+    z-index: 2;
+}
+
+#authContainer .sign-up-container {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+}
+
+#authContainer #container.right-panel-active .sign-in-container {
+    transform: translateX(100%);
+    opacity: 0;
+    z-index: 1;
+}
+
+#authContainer #container.right-panel-active .sign-up-container {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 2;
+}
+
+#authContainer .overlay-container {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: 100;
+}
+
+#authContainer #container.right-panel-active .overlay-container {
+    transform: translateX(-100%);
+}
+
+#authContainer .overlay {
+    background: linear-gradient(135deg, #f72585, #7209b7);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+    color: #fff;
+    position: relative;
+    left: -100%;
+    height: 100%;
+    width: 200%;
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#authContainer #container.right-panel-active .overlay {
+    transform: translateX(50%);
+}
+
+#authContainer .overlay-panel {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 0 60px;
+    text-align: center;
+    top: 0;
+    height: 100%;
+    width: 50%;
+    transform: translateX(0);
+    transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+#authContainer .overlay-left {
+    transform: translateX(-20%);
+}
+
+#authContainer #container.right-panel-active .overlay-left {
+    transform: translateX(0);
+}
+
+#authContainer .overlay-right {
+    right: 0;
+    transform: translateX(0);
+}
+
+#authContainer #container.right-panel-active .overlay-right {
+    transform: translateX(20%);
+}
+
+#authContainer .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    color: #4361ee;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+}
+
+#authContainer .logo i {
+    margin-right: 10px;
+    font-size: 28px;
+}
+
+#authContainer h1 {
+    font-weight: 700;
+    margin: 0 0 20px;
+    font-size: 2.2rem;
+    color: #14213d;
+    text-align: center;
+}
+
+#authContainer .overlay-panel h1 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+#authContainer p {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+    margin: 0 0 30px;
+    color: #868e96;
+}
+
+#authContainer .overlay-panel p {
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 30px;
+}
+
+#authContainer form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#authContainer .social-container {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#authContainer .social-container a {
+    border: 1px solid #e9ecef;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    height: 44px;
+    width: 44px;
+    color: #343a40;
+    transition: all 0.3s ease;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+#authContainer .social-container a:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#authContainer .social-container a i {
+    font-size: 18px;
+}
+
+#authContainer .divider {
+    display: block;
+    text-align: center;
+    margin: 20px 0;
+    color: #868e96;
+    font-size: 14px;
+    position: relative;
+}
+
+#authContainer .divider::before, 
+#authContainer .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: #e9ecef;
+}
+
+#authContainer .divider::before {
+    left: 0;
+}
+
+#authContainer .divider::after {
+    right: 0;
+}
+
+#authContainer .input-group {
+    position: relative;
+    margin: 0 0 20px;
+    width: 100%;
+}
+
+#authContainer .input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #868e96;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+#authContainer input {
+    background-color: #f1f3f5;
+    border: 1px solid #e9ecef;
+    padding: 14px 15px 14px 45px;
+    margin: 0;
+    width: 100%;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    font-family: 'Poppins', sans-serif;
+}
+
+#authContainer input:focus {
+    outline: none;
+    border-color: #4895ef;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+#authContainer input:focus ~ .input-icon {
+    color: #4361ee;
+}
+
+#authContainer .input-focus-animation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #4361ee;
+    transition: width 0.4s ease;
+    z-index: 2;
+    border-radius: 0 0 8px 8px;
+}
+
+#authContainer input:focus ~ .input-focus-animation {
+    width: 100%;
+}
+
+#authContainer .password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #868e96;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 2;
+}
+
+#authContainer .password-toggle:hover {
+    color: #4361ee;
+}
+
+#authContainer .password-strength {
+    width: 100%;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#authContainer .strength-bar {
+    height: 4px;
+    flex-grow: 1;
+    background-color: #e9ecef;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+#authContainer .strength-text {
+    font-size: 12px;
+    color: #868e96;
+    transition: all 0.3s ease;
+}
+
+#authContainer .form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0 20px;
+}
+
+#authContainer .remember-me {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #868e96;
+    cursor: pointer;
+    user-select: none;
+}
+
+#authContainer .remember-me input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+#authContainer .checkmark {
+    position: relative;
+    height: 18px;
+    width: 18px;
+    background-color: #f1f3f5;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+
+#authContainer .remember-me:hover input ~ .checkmark {
+    background-color: #e9ecef;
+}
+
+#authContainer .remember-me input:checked ~ .checkmark {
+    background-color: #4361ee;
+    border-color: #4361ee;
+}
+
+#authContainer .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+#authContainer .remember-me input:checked ~ .checkmark:after {
+    display: block;
+}
+
+#authContainer .remember-me .checkmark:after {
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+#authContainer .forgot-password {
+    color: #868e96;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+#authContainer .forgot-password:hover {
+    color: #4361ee;
+}
+
+#authContainer .toggle-form {
+    color: #4361ee;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 5px;
+}
+
+#authContainer .toggle-form:hover {
+    color: #3a0ca3;
+    text-decoration: underline;
+}
+
+#authContainer .form-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
+    color: #868e96;
+}
+
+/* Button Styles */
+#authContainer .btn-pulse {
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #4361ee, #4895ef);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 14px 30px;
+    letter-spacing: 0.5px;
+    text-transform: none;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+#authContainer .btn-pulse:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #4895ef, #4361ee);
+}
+
+#authContainer .btn-pulse:active {
+    transform: translateY(-1px);
+}
+
+#authContainer .btn-pulse:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+}
+
+#authContainer .btn-pulse .btn-text {
+    position: relative;
+    z-index: 1;
+}
+
+#authContainer .btn-pulse .btn-icon {
+    margin-left: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+#authContainer .btn-pulse:hover .btn-icon {
+    transform: translateX(3px);
+}
+
+#authContainer .btn-pulse::after {
+    content: "";
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    border-radius: 50px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #4361ee, #4895ef);
+}
+
+#authContainer .btn-pulse:hover::after {
+    transform: scale(1.05);
+    opacity: 0.5;
+}
+
+#authContainer .ghost {
+    background: transparent;
+    border: 2px solid #fff;
+    box-shadow: none;
+}
+
+#authContainer .ghost::after {
+    content: none;
+}
+
+#authContainer .ghost:hover {
+    background: #fff;
+    color: #4361ee;
+}
+
+#authContainer .ghost:hover .btn-icon {
+    color: #4361ee;
+}
+
+/* Toast Notification */
+#authContainer .toast {
+    position: fixed;
+    top: 25px;
+    right: 30px;
+    border-radius: 12px;
+    background: #fff;
+    padding: 18px 30px 18px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border-left: 4px solid #38b000;
+    overflow: hidden;
+    transform: translateX(calc(100% + 30px));
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.35);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    max-width: 400px;
+}
+
+#authContainer .toast.active {
+    transform: translateX(0%);
+}
+
+#authContainer .toast .toast-content {
+    display: flex;
+    align-items: center;
+}
+
+#authContainer .toast-content .toast-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    width: 30px;
+    background-color: #38b000;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+#authContainer .toast-content .message {
+    display: flex;
+    flex-direction: column;
+}
+
+#authContainer .message .text {
+    font-size: 15px;
+    font-weight: 400;
+    color: #343a40;
+}
+
+#authContainer .message .text.text-1 {
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+#authContainer .toast .progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: #ddd;
+}
+
+#authContainer .toast .progress:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    background-color: #38b000;
+}
+
+#authContainer .progress.active:before {
+    animation: progress 5s linear forwards;
+}
+
+@keyframes progress {
+    100% {
+        right: 100%;
+    }
+}
+
+/* Spark animations */
+#authContainer .spark {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: #4cc9f0;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+    animation: sparkAnimation 0.8s ease-out forwards;
+    box-shadow: 0 0 10px 2px #4cc9f0;
+}
+
+@keyframes sparkAnimation {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+        width: 6px;
+        height: 6px;
+    }
+    100% {
+        transform: translate(var(--spark-x), var(--spark-y));
+        opacity: 0;
+        width: 2px;
+        height: 2px;
+    }
+}
+
+
+@media (max-width: 991px) {
+    #authContainer {
+        padding: 0 30px;
+    }    
+    #authContainer h1 {
+        font-size: 2rem;
+    }
+    
+    #authContainer .btn-pulse {
+        padding: 12px 25px;
+    }
+}
+
+@media (max-width: 768px) {
+    #authContainer {
+        padding: 0 20px;
+    }
+    
+    #authContainer .form-container {
+        margin-top: 4%;
+        padding: 30px;
+    }
+    
+    #authContainer .particles {
+        display: none;
+    }
+    
+    #authContainer .spark-overlay {
+        display: none;
+    }
+
+    #authContainer .form-container {
+        padding: 30px 20px;
+    }
+    
+    #authContainer h1 {
+        font-size: 1rem;
+    }
+    
+    #authContainer p {
+        font-size: 0.9rem;
+    }
+    
+    #authContainer .input-group {
+        margin: 0 0 7px;
+    }
+    
+    #authContainer .input-icon {
+        font-size: 14px;
+    }
+    
+    #authContainer input {
+        padding: 10px 15px 10px 35px;
+        font-size: 12px;
+    }
+    
+    #authContainer .password-strength {
+        margin-top: 5px;
+    }
+    
+    #authContainer .strength-bar {
+        height: 3px;
+    }
+    
+    #authContainer .strength-text {
+        font-size: 12px;
+    }
+    
+    #authContainer .form-options {
+        font-size: 12px;
+    }
+    
+    #authContainer .remember-me {
+        font-size: 11px;
+        margin-right: 5%;
+    }
+    
+    #authContainer .forgot-password {
+        font-size: 11px;
+        margin-left: 5%;
+    }
+    
+    #authContainer .toggle-form {
+        font-size: 12px;
+    }
+    
+    #authContainer .form-footer {
+        font-size: 12px;
+    }
+    
+    #authContainer .btn-pulse {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+    
+    #authContainer .btn-pulse .btn-icon {
+        font-size: 12px;
+    }
+    
+    #authContainer .btn-pulse .btn-text {
+        font-size: 14px;
+    }
+    
+    #authContainer .btn-pulse:hover .btn-icon {
+        font-size: 14px;
+    }
+    
+    #authContainer .btn-pulse:hover .btn-text {
+        font-size: 14px;
+    }
+    
+    #authContainer .btn-pulse:active {
+        transform: translateY(-1px);
+    }
+    
+    #authContainer .btn-pulse:focus {
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.3);
+    }
+    
+    #authContainer .overlay-container {
+        font-size: larger;
+    }
+
+    #authContainer .container {
+        flex-direction: column;
+        width: 100%;
+        font-size: smaller;
+        min-height: 65vh;
+    }
+
+    #authContainer .overlay-left, 
+    #authContainer .overlay-right {
+        transform: translateX(0);
+    }
+    
+    #authContainer .btn-pulse {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
     <!-- Toast Container -->
     <div id="toastContainer"></div>
 
+   <!-- Auth Container -->
+<div class="container" id="authContainer">
+    <div class="particles" id="particles-js"></div>
+    <div class="spark-overlay"></div>
+    
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="registerForm">
+                <div class="logo">
+                    <i class="fas fa-user-lock"></i>
+                    <span>Smart Attendance Pro</span>
+                </div>
+                <h1>Create Account</h1>
+           
+                <div class="input-group">
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="regName" placeholder="Full Name" required />
+                    <span class="input-focus-animation"></span>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="regEmail" placeholder="Email Address" required />
+                    <span class="input-focus-animation"></span>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regPassword" placeholder="Password" required />
+                    <span class="input-focus-animation"></span>
+                    <div class="password-strength">
+                        <span class="strength-bar"></span>
+                        <span class="strength-bar"></span>
+                        <span class="strength-bar"></span>
+                        <span class="strength-text"></span>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="regConfirmPassword" placeholder="Confirm Password" required />
+                    <span class="input-focus-animation"></span>
+                </div>
+                <button type="submit" class="btn-pulse">
+                    <span class="btn-text">Sign Up</span>
+                    <i class="fas fa-arrow-right btn-icon"></i>
+                </button>
+                <div class="form-footer">
+                    <p>Already have an account? <a href="#" class="toggle-form">Sign In</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form id="loginForm">
+                <div class="logo">
+                    <i class="fas fa-user-lock"></i>
+                    <span>Smart Attendance Pro</span>
+                </div>
+                <h1>Welcome Back</h1>
+          
+                <div class="input-group">
+                    <i class="fas fa-envelope input-icon"></i>
+                    <input type="email" id="loginEmail" placeholder="Email Address" required />
+                    <span class="input-focus-animation"></span>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock input-icon"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required />
+                    <span class="input-focus-animation"></span>
+                    <i class="fas fa-eye password-toggle"></i>
+                </div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox">
+                        <span class="checkmark"></span>
+                        Remember me
+                    </label>
+                    <a href="#" class="forgot-password">Forgot password?</a>
+                </div>
+                <button type="submit" class="btn-pulse">
+                    <span class="btn-text">Sign In</span>
+                    <i class="fas fa-arrow-right btn-icon"></i>
+                </button>
+                <div class="form-footer">
+                    <p>Don't have an account? <a href="#" class="toggle-form">Sign Up</a></p>
+                </div>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1>Welcome Back!</h1>
+                    <p>To keep connected with us please login with your personal info</p>
+                    <button class="ghost btn-pulse" id="signIn">
+                        <span class="btn-text">Sign In</span>
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </button>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Enter your personal details and start your journey with us</p>
+                    <button class="ghost btn-pulse" id="signUp">
+                        <span class="btn-text">Sign Up</span>
+                        <i class="fas fa-arrow-right btn-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
     <!-- Dashboard Container -->
-    <div class="container" id="dashboardContainer">
+    <div class="container hidden" id="dashboardContainer">
         <div class="dashboard">
             <div class="dashboard-header">
                 <h2>Attendance Dashboard</h2>
                 <div class="user-info">
-                    <div class="user-avatar" id="userAvatar">A</div>
+                    <div class="user-avatar" id="userAvatar">T</div>
                     <div>
-                        <div id="userName">Admin</div>
-                        <div style="font-size: 12px;" id="userRole">Administrator</div>
+                        <div id="userName">Teacher</div>
+                        <div style="font-size: 12px;" id="userRole">Teacher</div>
                     </div>
+                    <button class="btn btn-danger" onclick="logout()" style="margin-left: auto;">Logout</button>
                 </div>
             </div>
             <div class="dashboard-body">
@@ -754,8 +1828,10 @@
         const { jsPDF } = window.jspdf;
 
         // Database
+        let users = JSON.parse(localStorage.getItem('attendanceUsers')) || [];
         let students = JSON.parse(localStorage.getItem('attendanceStudents')) || [];
         let attendanceRecords = JSON.parse(localStorage.getItem('attendanceRecords')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
         let settings = JSON.parse(localStorage.getItem('attendanceSettings')) || {
             lecturesPerDay: 6,
             attendanceThreshold: 75,
@@ -770,19 +1846,24 @@
         checkWeeklyReport();
 
         // DOM Elements
+        const authContainer = document.getElementById('authContainer');
         const dashboardContainer = document.getElementById('dashboardContainer');
 
-        // Initialize UI
-        updateUI();
-        renderStudentsTable();
-        updateAnalytics();
-        loadSettings();
-        
-        // Set default dates
-        const today = new Date();
-        document.getElementById('attendanceDate').valueAsDate = today;
-        document.getElementById('analyticsStartDate').valueAsDate = new Date(today.setDate(today.getDate() - 30));
-        document.getElementById('analyticsEndDate').valueAsDate = new Date();
+        // Initialize UI if user is already logged in
+        if (currentUser) {
+            authContainer.classList.add('hidden');
+            dashboardContainer.classList.remove('hidden');
+            updateUI();
+            renderStudentsTable();
+            updateAnalytics();
+            loadSettings();
+            
+            // Set default dates
+            const today = new Date();
+            document.getElementById('attendanceDate').valueAsDate = today;
+            document.getElementById('analyticsStartDate').valueAsDate = new Date(today.setDate(today.getDate() - 30));
+            document.getElementById('analyticsEndDate').valueAsDate = new Date();
+        }
 
         // Show toast notification
         function showToast(message, type = 'success') {
@@ -802,6 +1883,19 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 500);
             }, 3000);
+        }
+
+        // Switch between login/register tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelector(`.nav-tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(`${tabName}Tab`).classList.add('active');
         }
 
         // Switch dashboard tabs
@@ -827,9 +1921,11 @@
 
         // Update UI with current user info
         function updateUI() {
-            document.getElementById('userName').textContent = 'Admin';
-            document.getElementById('userAvatar').textContent = 'A';
-            document.getElementById('userRole').textContent = 'Administrator';
+            if (!currentUser) return;
+            
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('userRole').textContent = currentUser.role;
         }
 
         // Initialize charts
@@ -915,6 +2011,165 @@
             });
         }
 
+        // Register new user
+       // Login user
+function login(event) {
+    if (event) event.preventDefault();
+    
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    if (!email || !password) {
+        showToast('Please enter email and password', 'error');
+        return;
+    }
+    
+    // Show loading state
+    const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+    const btnText = loginBtn.querySelector('.btn-text');
+    const btnIcon = loginBtn.querySelector('.btn-icon');
+    
+    btnText.textContent = 'Signing In...';
+    btnIcon.classList.remove('fa-arrow-right');
+    btnIcon.classList.add('fa-spinner', 'fa-spin');
+    loginBtn.disabled = true;
+    
+    setTimeout(() => {
+        try {
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (!user) {
+                showToast('Invalid credentials', 'error');
+                return;
+            }
+            
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            // Update UI
+            updateUI();
+            
+            // Show dashboard
+            authContainer.classList.add('hidden');
+            dashboardContainer.classList.remove('hidden');
+            
+            // Load initial data
+            renderStudentsTable();
+            updateAnalytics();
+            loadSettings();
+            
+            // Set default dates
+            const today = new Date();
+            document.getElementById('attendanceDate').valueAsDate = today;
+            document.getElementById('analyticsStartDate').valueAsDate = new Date(today.setDate(today.getDate() - 30));
+            document.getElementById('analyticsEndDate').valueAsDate = new Date();
+            
+            showToast(`Welcome back, ${user.name}!`, 'success');
+            
+            // Clear form
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+        } catch (error) {
+            showToast('Login failed', 'error');
+        } finally {
+            // Reset button state
+            btnText.textContent = 'Sign In';
+            btnIcon.classList.remove('fa-spinner', 'fa-spin');
+            btnIcon.classList.add('fa-arrow-right');
+            loginBtn.disabled = false;
+        }
+    }, 1500);
+}
+
+// Register user
+function register(event) {
+    if (event) event.preventDefault();
+    
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    const confirmPassword = document.getElementById('regConfirmPassword').value;
+    const role = "teacher";
+    
+    if (!name || !email || !password || !confirmPassword) {
+        showToast('Please fill all fields', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showToast('Passwords do not match', 'error');
+        return;
+    }
+    
+    if (users.some(user => user.email === email)) {
+        showToast('Email already registered', 'error');
+        return;
+    }
+    
+    // Show loading state
+    const registerBtn = document.querySelector('#registerForm button[type="submit"]');
+    const btnText = registerBtn.querySelector('.btn-text');
+    const btnIcon = registerBtn.querySelector('.btn-icon');
+    
+    btnText.textContent = 'Registering...';
+    btnIcon.classList.remove('fa-arrow-right');
+    btnIcon.classList.add('fa-spinner', 'fa-spin');
+    registerBtn.disabled = true;
+    
+    setTimeout(() => {
+        try {
+            const newUser = {
+                id: Date.now().toString(),
+                name,
+                email,
+                password, // In real app, hash this password
+                role,
+                createdAt: new Date()
+            };
+            
+            users.push(newUser);
+            localStorage.setItem('attendanceUsers', JSON.stringify(users));
+            
+            showToast('Registration successful! Please login', 'success');
+            
+            // Switch to login form and clear
+            document.getElementById('container').classList.remove('right-panel-active');
+            document.getElementById('regName').value = '';
+            document.getElementById('regEmail').value = '';
+            document.getElementById('regPassword').value = '';
+            document.getElementById('regConfirmPassword').value = '';
+            
+            // Reset password strength indicator
+            document.querySelectorAll('.strength-bar').forEach(bar => {
+                bar.style.backgroundColor = '#e9ecef';
+            });
+            document.querySelector('.strength-text').textContent = '';
+        } catch (error) {
+            showToast('Registration failed', 'error');
+        } finally {
+            // Reset button state
+            btnText.textContent = 'Sign Up';
+            btnIcon.classList.remove('fa-spinner', 'fa-spin');
+            btnIcon.classList.add('fa-arrow-right');
+            registerBtn.disabled = false;
+        }
+    }, 1500);
+}
+
+        // Logout
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            authContainer.classList.remove('hidden');
+            dashboardContainer.classList.add('hidden');
+            
+            // Clear login form
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            
+            showToast('Logged out successfully', 'success');
+        }
+
         // Load settings
         function loadSettings() {
             document.getElementById('lecturesPerDay').value = settings.lecturesPerDay;
@@ -952,6 +2207,7 @@
                 roll,
                 name,
                 class: classVal,
+                addedBy: currentUser.id,
                 addedAt: new Date()
             };
             
@@ -1136,6 +2392,7 @@
                     studentRoll,
                     date,
                     lectures: new Array(6).fill(false),
+                    recordedBy: currentUser.id,
                     recordedAt: new Date()
                 };
                 attendanceRecords.push(record);
@@ -1320,7 +2577,7 @@
 
         // Check if weekly report should be generated
         function checkWeeklyReport() {
-            if (!settings.autoReport) return;
+            if (!currentUser || !settings.autoReport) return;
             
             const lastReportDate = localStorage.getItem('lastReportDate');
             const today = new Date();
@@ -1503,6 +2760,7 @@
         // Export data
         function exportData() {
             const data = {
+                users,
                 students,
                 attendanceRecords,
                 settings
@@ -1530,13 +2788,17 @@
 
         // Reset all data
         function resetAllData() {
+            localStorage.removeItem('attendanceUsers');
             localStorage.removeItem('attendanceStudents');
             localStorage.removeItem('attendanceRecords');
             localStorage.removeItem('attendanceSettings');
+            localStorage.removeItem('currentUser');
             localStorage.removeItem('lastReportDate');
             
+            users = [];
             students = [];
             attendanceRecords = [];
+            currentUser = null;
             settings = {
                 lecturesPerDay: 6,
                 attendanceThreshold: 75,
@@ -1546,6 +2808,79 @@
             // Reload the page
             window.location.reload();
         }
+        // Add form event listeners
+document.getElementById('loginForm').addEventListener('submit', login);
+document.getElementById('registerForm').addEventListener('submit', register);
+
+// Add toggle form event listeners
+document.querySelectorAll('.toggle-form, #signIn, #signUp').forEach(element => {
+    element.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('container').classList.toggle('right-panel-active');
+    });
+});
+
+// Password toggle functionality
+function setupPasswordToggle(inputElement) {
+    const parent = inputElement.parentNode;
+    const toggle = document.createElement('i');
+    toggle.className = 'fas fa-eye password-toggle';
+    parent.appendChild(toggle);
+    
+    toggle.addEventListener('click', function() {
+        const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
+        inputElement.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+    });
+}
+
+setupPasswordToggle(document.getElementById('loginPassword'));
+setupPasswordToggle(document.getElementById('regPassword'));
+setupPasswordToggle(document.getElementById('regConfirmPassword'));
+
+// Password strength indicator
+document.getElementById('regPassword').addEventListener('input', function() {
+    const password = this.value;
+    const strength = calculatePasswordStrength(password);
+    const bars = document.querySelectorAll('.strength-bar');
+    const text = document.querySelector('.strength-text');
+    
+    bars.forEach((bar, index) => {
+        bar.style.backgroundColor = index < strength.level ? strength.color : '#e9ecef';
+    });
+    
+    text.textContent = strength.text;
+    text.style.color = strength.color;
+});
+
+function calculatePasswordStrength(password) {
+    let strength = 0;
+    let text = 'Weak';
+    let color = '#e5383b'; // Error color
+    
+    if (password.length >= 8) strength++;
+    if (password.length >= 12) strength++;
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+    if (/\d/.test(password)) strength++;
+    if (/[^a-zA-Z0-9]/.test(password)) strength++;
+    
+    if (strength <= 2) {
+        text = 'Weak';
+        color = '#e5383b'; // Error color
+    } else if (strength <= 4) {
+        text = 'Medium';
+        color = '#ffaa00'; // Warning color
+    } else {
+        text = 'Strong';
+        color = '#38b000'; // Success color
+    }
+    
+    return {
+        level: Math.min(Math.ceil(strength / 2), 3),
+        text: text,
+        color: color
+    };
+}
     </script>
 </body>
 </html>
